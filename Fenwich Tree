@@ -1,0 +1,37 @@
+
+class FenwichTree
+{
+private:
+    vector<int>bit;
+    int n;
+public:
+    FenwichTree(int n) : n(n)
+    {
+        bit.resize(n + 1);
+    }
+
+    void Clear(int N)
+    {
+        for(int i = 0 ; i <= N ; i++)
+            bit[i] = 0;
+    }
+
+    void Update(int x, int val)
+    {
+        for(; x <= n ; x += x & -x)
+            bit[x] += val;
+    }
+
+    int Get(int x)
+    {
+        int ans = 0;
+        for(; x > 0 ; x -= x & -x)
+            ans += bit[x];
+        return ans;
+    }
+
+    int Get(int l, int r)
+    {
+        return Get(r) - Get(l - 1);
+    }
+};
