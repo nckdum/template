@@ -1,0 +1,41 @@
+
+class DSU
+{
+public:
+    DSU(int n)
+    {
+        prt.resize(n + 1, -1);
+    }
+
+    int SZ(int u)
+    {
+        return -prt[root(u)];
+    }
+
+    int root(int u)
+    {
+        return (prt[u] <= 0 ? u : (prt[u] = root(prt[u])));
+    }
+
+    bool connected(int u, int v)
+    {
+        return ((u = root(u)) == (v = root(v)));
+    }
+
+    void unite(int u, int v)
+    {
+        if((u = root(u)) == (v = root(v)))
+            return;
+        if(prt[u] > prt[v])
+        {
+            u ^= v;
+            v ^= u;
+            u ^= v;
+        }
+        prt[u] += prt[v];
+        prt[v] = u;
+        ///...
+    }
+private:
+    vector<int>prt;
+};
