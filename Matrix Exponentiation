@@ -1,0 +1,92 @@
+
+namespace Matrix_Exponentiation {
+
+    const int MAX_ROW = x; // Change Max_row here
+    const int MAX_COL = x; // Change Max_col here
+    ll mod = 1e9+7; // Change MOD here
+    ll mxmod = (ll)(7e18/mod) * mod;
+
+    void change_mod(ll _mod)
+    {
+        mod = _mod;
+        mxmod = (ll)(7e18/mod) * mod;
+    }
+
+    ll multi(ll a,ll b)
+    {
+        ll ret = 0;
+        for(int i = 0 ; MASK(i) <= b ; i++,a = (a+a)%mod)
+            if(MASK(i) & b) ret = (ret+a)%mod;
+        return ret;
+    }
+
+    struct Matrix
+    {
+        int r,c;
+        ll a[MAX_ROW][MAX_COL];
+        void Resize(int _r,int _c)
+        {
+            r = _r;
+            c = _c;
+            repp(i,0,_r) repp(j,0,_c) a[i][j] = 0;
+        }
+
+        auto & operator [] (int i) { return a[i]; }
+
+        const auto & operator[] (int i) const { return a[i]; }
+
+        Matrix operator *(const Matrix& other)
+        {
+            Matrix product,tmp;
+            product.Resize(r,other.c);
+            tmp.Resize(r,other.c);
+            repp(i,0,product.r)
+                repp(j,0,c)
+                    repp(k,0,product.c)
+                    {
+//                        product[i][k] += multi(a[i][j] , other.a[j][k]);
+                        tmp[i][k] += a[i][j] * other[j][k];
+                        if(tmp[i][k] >= mxmod)
+                            tmp[i][k] -= mxmod;
+                    }
+            repp(i,0,product.r)
+                repp(j,0,product.c)
+                    product[i][j] = tmp[i][j]%mod;
+            return product;
+        }
+
+        void operator *= (const Matrix& other)
+        {
+            *this = *this * other;
+        }
+
+        Matrix operator ^ (const ll& b)
+        {
+            Matrix ret;
+            Matrix m = *this;
+            ret.Resize(m.r,m.c);
+            repp(i,0,ret.r) ret[i][i] = 1;
+            for(int i = 0 ; MASK(i) <= b ; i++,m*=m)
+                if(b & MASK(i)) ret*=m;
+            return ret;
+        }
+
+        void operator ^= (const ll& b)
+        {
+            *this = *this ^ b;
+        }
+
+        friend ostream& operator <<(ostream& os, const Matrix& M)
+        {
+            repp(i,0,M.r)
+            {
+                repp(j,0,M.c)
+                    os << M.a[i][j] << ' ';
+                os << '\n';
+            }
+            return os;
+        }
+    };
+}
+
+using namespace Matrix_Exponentiation;
