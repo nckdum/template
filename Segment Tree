@@ -1,0 +1,80 @@
+
+class SegmentTree
+{
+public:
+    SegmentTree *left, *right;
+    int l, r, m, lazy, val;
+    SegmentTree(int l, int r) : l(l), r(r), m((l + r) >> 1), lazy(0), val(0)
+    {
+        if(l == r)
+            return;
+        left = new SegmentTree(l, m);
+        right = new SegmentTree(m + 1, r);
+    }
+
+    void Update(int k, int x)
+    {
+        if(l == r)
+        {
+            val += x;
+            return;
+        }
+        Down();
+        if(k <= m)
+            left->Update(k, x);
+        else
+            right->Update(k, x);
+        Up();
+    }
+
+    void Update(int s, int t, int x)
+    {
+        if(l > t || r < s)
+            return;
+        if(s <= l && r <= t)
+        {
+            val += x;
+            lazy += x;
+            return;
+        }
+        Down();
+        left->Update(s, t, x);
+        right->Update(s, t, x);
+        Up();
+    }
+
+    int Get(int s, int t)
+    {
+        if(l > t || r < s)
+            return 0;
+        if(s <= l && r <= t)
+            return val;
+        Down();
+        return left->Get(s, t) + right->Get(s, t);
+    }
+
+    int Get(int k)
+    {
+        if(l == r)
+            return val;
+        Down();
+        if(k <= m)
+            return left->Get(k);
+        else return right->Get(k);
+    }
+
+    void Down()
+    {
+        left->lazy += lazy;
+        left->val += lazy;
+        right->lazy += lazy;
+        right->val += lazy;
+
+        lazy = 0;
+    }
+
+    void Up()
+    {
+        val = max( left->val, right->val );
+    }
+};
