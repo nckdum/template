@@ -2,7 +2,7 @@
 bool ok[MAXN];
 vi prime;
 
-void eratosthenes(int N, bool ok)
+void eratosthenes(int N, bool vec)
 {
     for(int i = 4 ; i <= N ; i += 2)
         ok[i] = 1;
@@ -10,7 +10,7 @@ void eratosthenes(int N, bool ok)
         if(!ok[i])
             for(int j = i * i ; j <= N ; j += i)
                 ok[j] = 1;
-    if(ok == 0)
+    if(vec == 0)
         return;
     prime.eb(2);
     for(int i = 3 ; i <= N ; i += 2)
